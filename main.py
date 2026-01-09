@@ -4,25 +4,31 @@ from todo import Todo as td, Filters
 todo = td()
 
 @click.group()
-def main():
-    pass
-
-@main.group()
 def tasks():
     pass
 
 @tasks.command()
+@click.option('--deadline', default="1d")
 @click.argument('task', nargs=-1)
-def add(task: str):
-    todo.add_task(task = " ".join(task))    
+def add(deadline, task: str):
+    todo.add_task(task = " ".join(task), deadline=deadline)    
     pass
 
-@tasks.command()
+@tasks.group()
+def edit():
+    pass
+
+@edit.command()
 @click.argument('id')
 @click.argument('task', nargs=-1)
-def edit(id: hex, task: str):
+def task(id: hex, task: str):
     todo.edit_task(id=id, task = " ".join(task))
-    pass
+
+@edit.command()
+@click.argument('id')
+@click.argument('duration')
+def deadline(id: hex, duration):
+    todo.add_time(id, duration)
 
 @tasks.command()
 @click.argument('id')
@@ -48,5 +54,5 @@ def view(filter: Filters):
 
 
 if __name__ == "__main__":
-    main()
+    tasks()
 
